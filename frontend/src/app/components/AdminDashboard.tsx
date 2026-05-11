@@ -8,7 +8,6 @@ interface Student {
   nome: string;
   matricula: string;
   email: string;
-  telefone: string;
   curso: string;
   dataInicio: string;
   dataTermino: string;
@@ -49,7 +48,6 @@ export default function AdminDashboard() {
       nome: 'Ana Silva',
       matricula: '2024001',
       email: 'ana.silva@email.com',
-      telefone: '(11) 98765-4321',
       curso: 'Engenharia de Software',
       dataInicio: '01/02/2024',
       dataTermino: '31/12/2027',
@@ -59,7 +57,6 @@ export default function AdminDashboard() {
       nome: 'Carlos Oliveira',
       matricula: '2024002',
       email: 'carlos.oliveira@email.com',
-      telefone: '(11) 98765-4322',
       curso: 'Administração',
       dataInicio: '01/02/2024',
       dataTermino: '31/12/2027',
@@ -70,7 +67,6 @@ export default function AdminDashboard() {
     nome: '',
     matricula: '',
     email: '',
-    telefone: '',
     curso: '',
     dataInicio: '',
     dataTermino: '',
@@ -98,9 +94,9 @@ export default function AdminDashboard() {
       nome: '',
       matricula: '',
       email: '',
-      telefone: '',
       curso: '',
-      periodo: '',
+      dataInicio: '',
+      dataTermino: '',
     });
   };
 
@@ -356,23 +352,6 @@ export default function AdminDashboard() {
                       required
                     />
                   </div>
-
-                  <div>
-                    <label htmlFor="telefone" className="block text-zinc-700 mb-2">
-                      Telefone
-                    </label>
-                    <input
-                      id="telefone"
-                      name="telefone"
-                      type="tel"
-                      value={formData.telefone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
-                      placeholder="(11) 98765-4321"
-                      required
-                    />
-                  </div>
-
                   <div>
                     <label htmlFor="curso" className="block text-zinc-700 mb-2">
                       Curso

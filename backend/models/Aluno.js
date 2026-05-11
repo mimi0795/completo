@@ -1,14 +1,28 @@
 const mongoose = require("mongoose");
 
-const alunoSchema = new mongoose.Schema({
-  nome: String,
-  matricula: String,
-  empresa: String,
-  dataInicio: Date,
-  dataFim: Date,
-  qrToken: String,
-  validado: { type: Boolean, default: false },
-  dataValidacao: Date
+const AlunoSchema = new mongoose.Schema({
+
+  nome: {
+    type: String,
+    required: true
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+
+  senha: {
+    type: String,
+    required: true
+  },
+
+  criadoEm: {
+    type: Date,
+    default: Date.now
+  }
+
 });
 
-module.exports = mongoose.model("Aluno", alunoSchema);
+module.exports = mongoose.model("Aluno", AlunoSchema);

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acesso</title>
+
+<style>
+
+body{
+  font-family:Arial;
+  background:#f4f4f4;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box{
+  background:white;
+  padding:30px;
+  width:350px;
+  border-radius:10px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="box">
+
+<h1>Entrar</h1>
+
+<input type="password" id="senha"
+placeholder="Digite sua senha">
+
+<button onclick="entrar()">
+Entrar
+</button>
+
+</div>
+
+<script>
+
+const API = "http://localhost:5000";
+
+async function entrar(){
+
+  const senha =
+  document.getElementById("senha").value;
+
+  const resposta = await fetch(
+    `${API}/aluno/listar`
+  );
+
+  const alunos = await resposta.json();
+
+  const aluno = alunos.find(a => a.senha === senha);
+
+  if(!aluno){
+
+    alert("Senha inválida");
+    return;
+
+  }
+
+  localStorage.setItem(
+    "alunoId",
+    aluno._id
+  );
+
+  window.location.href = "perfil.html";
+
+}
+
+</script>
+
+</body>
+</html>

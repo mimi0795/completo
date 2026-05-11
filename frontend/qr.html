@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>QR Code Geral</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+
+body{
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#f4f4f4;
+  flex-direction:column;
+}
+
+#qrcode{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>QR Code Oficial</h1>
+
+<canvas id="qrcode"></canvas>
+
+<script>
+
+QRCode.toCanvas(
+  document.getElementById("qrcode"),
+  "http://localhost:5500/acesso.html"
+);
+
+</script>
+
+</body>
+</html>

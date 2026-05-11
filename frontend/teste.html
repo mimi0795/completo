@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil</title>
+
+<style>
+
+body{
+  font-family:Arial;
+  background:#f4f4f4;
+  padding:20px;
+}
+
+.box{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  background:green;
+  color:white;
+  border:none;
+  margin-top:20px;
+  font-size:18px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="box">
+
+<h1>Perfil do Aluno</h1>
+
+<div id="perfil"></div>
+
+<button onclick="aceitar()">
+Aceito
+</button>
+
+</div>
+
+<script>
+
+const API = "http://localhost:5000";
+
+const alunoId = localStorage.getItem(
+  "alunoId"
+);
+
+let alunoGlobal;
+
+async function carregarPerfil(){
+
+  const resposta = await fetch(
+    `${API}/aluno/listar`
+  );
+
+  const alunos = await resposta.json();
+
+  const aluno = alunos.find(
+    a => a._id === alunoId
+  );
+
+  alunoGlobal = aluno;
+
+  document.getElementById("perfil")
+  .innerHTML = `
+
+    <h2>${aluno.nome}</h2>
+
+    <p><b>Email:</b>
+    ${aluno.email}</p>
+
+    <p><b>ID:</b>
+    ${aluno._id}</p>
+
+    <p><b>Cadastro:</b>
+    ${new Date(aluno.criadoEm)
+      .toLocaleString()}</p>
+
+  `;
+
+}
+
+async function aceitar(){
+
+  const agora = new Date();
+
+  const resposta = await fetch(
+    `${API}/confirmacao`,
+    {
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+
+        nome: alunoGlobal.nome,
+
+        email: alunoGlobal.email,
+
+        alunoId: alunoGlobal._id,
+
+        data: agora.toLocaleDateString(),
+
+        hora: agora.toLocaleTimeString(),
+
+        dataCompleta: agora
+
+      })
+
+    }
+  );
+
+  const dados = await resposta.json();
+
+  alert(dados.msg);
+
+}
+
+carregarPerfil();
+
+</script>
+
+</body>
+</html>

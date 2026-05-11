@@ -8,12 +8,11 @@ const studentData = {
   nome: 'Ana Silva',
   matricula: '2024001',
   email: 'ana.silva@email.com',
-  telefone: '(11) 98765-4321',
   curso: 'Engenharia de Software',
   periodo: '7º Período',
   estagio: {
-    empresa: 'Tech Solutions',
-    cargo: 'Desenvolvedor Júnior',
+  empresa: 'Tech Solutions',
+  cargo: 'Desenvolvedor Júnior',
     supervisor: 'Carlos Mendes',
     dataInicio: '01/02/2026',
     dataFim: '31/07/2026',
@@ -105,10 +104,8 @@ export default function StudentDashboard() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-zinc-400 mt-0.5" />
+                 
                   <div>
-                    <p className="text-zinc-500 text-sm">Telefone</p>
-                    <p className="text-zinc-900">{studentData.telefone}</p>
                   </div>
                 </div>
               </div>
