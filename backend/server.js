@@ -19,10 +19,6 @@ app.use(express.json());
 app.use("/admin", adminRoutes);
 app.use("/aluno", alunoRoutes);
 app.use("/porteiro", porteiroRoutes);
-
-app.listen(process.env.PORT, () => {
-  console.log("Servidor rodando");
-});
 const confirmacaoRoutes = require(
   "./routes/confirmacaoRoutes"
 );
@@ -31,3 +27,9 @@ app.use(
   "/confirmacao",
   confirmacaoRoutes
 );
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
