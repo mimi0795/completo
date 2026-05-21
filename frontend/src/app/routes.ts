@@ -3,6 +3,7 @@ import LoginPage from "./components/LoginPage";
 import AdminDashboard from "./components/AdminDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 import Portaria from "./components/Portaria";
+import SolicitarSaida from "./components/SolicitarSaida";
 
 export const router = createBrowserRouter([
   {
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
   {
     path: "/portaria",
     Component: Portaria,
+  },
+  {
+    path: "/solicitar-saida",
+    Component: SolicitarSaida,
   },
 ]);

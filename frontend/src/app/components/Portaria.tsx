@@ -1,16 +1,36 @@
 
-import { LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Search, User, GraduationCap, KeyRound } from 'lucide-react';
+import {
+  Building2,
+  Calendar,
+  GraduationCap,
+  KeyRound,
+  LogOut,
+  Mail,
+  Search,
+  User,
+  X
+} from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 interface Aluno {
   _id: string;
   nome: string;
   email: string;
-  curso: string;
+  curso?: string;
+  matricula?: string;
+  periodo?: string;
   senha: string;
-  createdAt: string;
+  criadoEm?: string;
+  createdAt?: string;
+  estagio?: {
+    empresa?: string;
+    cargo?: string;
+    supervisor?: string;
+    dataInicio?: string;
+    dataFim?: string;
+    endereco?: string;
+  };
 }
 
 export default function DashboardPorteiro() {
@@ -30,6 +50,9 @@ export default function DashboardPorteiro() {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [alunoSelecionado, setAlunoSelecionado] =
+    useState<Aluno | null>(null);
   function sair() {
 
     localStorage.removeItem(
@@ -53,6 +76,17 @@ export default function DashboardPorteiro() {
 
   useEffect(() => {
 
+    const alunoSalvo =
+      localStorage.getItem(
+        'alunoSelecionado'
+      );
+
+    if (alunoSalvo) {
+      setAlunoSelecionado(
+        JSON.parse(alunoSalvo)
+      );
+    }
+
     buscarAlunos();
 
   }, []);
@@ -74,6 +108,10 @@ export default function DashboardPorteiro() {
     } catch (error) {
 
       console.log(error);
+
+    } finally {
+
+      setLoading(false);
 
     }
 
@@ -99,9 +137,36 @@ export default function DashboardPorteiro() {
      ABRIR PERFIL DO ALUNO
   ========================================= */
 
-  function abrirAluno(id: string) {
+  function abrirAluno(aluno: Aluno) {
 
-    navigate(`/aluno/${id}`);
+  // salva o aluno clicado
+  localStorage.setItem(
+    'alunoSelecionado',
+    JSON.stringify(aluno)
+  );
+
+  // abre página do perfil
+  setAlunoSelecionado(aluno);
+
+}
+
+  function fecharPerfil() {
+
+    localStorage.removeItem(
+      'alunoSelecionado'
+    );
+
+    setAlunoSelecionado(null);
+
+  }
+
+  function formatarData(data?: string) {
+
+    if (!data) return 'Não informado';
+
+    return new Date(data).toLocaleString(
+      'pt-BR'
+    );
 
   }
 
@@ -176,6 +241,117 @@ export default function DashboardPorteiro() {
 
       </div>
 
+      {alunoSelecionado && (
+
+        <div className="bg-white p-6 rounded-xl shadow mb-6 border border-indigo-200">
+
+          <div className="flex items-start justify-between gap-4 mb-6">
+
+            <div className="flex items-center gap-3">
+
+              <div className="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center">
+
+                <User className="text-indigo-600 w-7 h-7" />
+
+              </div>
+
+              <div>
+
+                <p className="text-sm text-indigo-600 font-medium">
+
+                  Perfil selecionado
+
+                </p>
+
+                <h2 className="text-2xl font-bold text-zinc-900">
+
+                  {alunoSelecionado.nome}
+
+                </h2>
+
+              </div>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={fecharPerfil}
+              className="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
+            >
+
+              <X className="w-5 h-5" />
+
+            </button>
+
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <Mail className="w-5 h-5 text-indigo-600" />
+
+              <span>{alunoSelecionado.email}</span>
+
+            </div>
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <GraduationCap className="w-5 h-5 text-indigo-600" />
+
+              <span>
+                Curso: {alunoSelecionado.curso || 'Não informado'}
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <KeyRound className="w-5 h-5 text-indigo-600" />
+
+              <span>Senha: {alunoSelecionado.senha}</span>
+
+            </div>
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <Calendar className="w-5 h-5 text-indigo-600" />
+
+              <span>
+                Cadastro: {formatarData(
+                  alunoSelecionado.createdAt ||
+                  alunoSelecionado.criadoEm
+                )}
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <User className="w-5 h-5 text-indigo-600" />
+
+              <span>
+                Matrícula: {alunoSelecionado.matricula || 'Não informado'}
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-3 text-zinc-700">
+
+              <Building2 className="w-5 h-5 text-indigo-600" />
+
+              <span>
+                Empresa: {alunoSelecionado.estagio?.empresa || 'Não informado'}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
       {/* =====================================
          LOADING
       ===================================== */}
@@ -184,7 +360,7 @@ export default function DashboardPorteiro() {
 
         <div className="text-center text-zinc-500">
 
-
+          Carregando alunos...
 
         </div>
 
@@ -200,9 +376,9 @@ export default function DashboardPorteiro() {
 
           <div
             key={aluno._id}
-            onClick={() =>
-              abrirAluno(aluno._id)
-            }
+           onClick={() =>
+            abrirAluno(aluno)
+                       }
             className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer border border-zinc-200"
           >
 
@@ -244,7 +420,7 @@ export default function DashboardPorteiro() {
 
                 Curso:
                 {' '}
-                {aluno.curso}
+                {aluno.curso || 'Não informado'}
 
               </span>
 
@@ -273,9 +449,10 @@ export default function DashboardPorteiro() {
               Cadastrado em:
               {' '}
 
-              {new Date(
-                aluno.createdAt
-              ).toLocaleString('pt-BR')}
+              {formatarData(
+                aluno.createdAt ||
+                aluno.criadoEm
+              )}
 
             </div>
 

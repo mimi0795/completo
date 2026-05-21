@@ -2,44 +2,142 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>QR Code Geral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code de Saida</title>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <style>
-
-body{
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:#f4f4f4;
-  flex-direction:column;
+* {
+  box-sizing: border-box;
 }
 
-#qrcode{
-  background:white;
-  padding:20px;
-  border-radius:20px;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f4f4f5;
+  color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
 }
 
+.folha {
+  width: min(100%, 720px);
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+}
+
+.marca {
+  font-size: 14px;
+  color: #4f46e5;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+p {
+  color: #52525b;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 12px auto 28px;
+  max-width: 520px;
+}
+
+#qrcode {
+  display: inline-block;
+  background: #ffffff;
+  padding: 18px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+}
+
+.url {
+  margin-top: 24px;
+  padding: 12px;
+  background: #f4f4f5;
+  border-radius: 8px;
+  color: #3f3f46;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+button {
+  margin-top: 24px;
+  border: 0;
+  background: #4f46e5;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    padding: 0;
+  }
+
+  .folha {
+    border: 0;
+    box-shadow: none;
+    width: 100%;
+  }
+
+  button {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
+  <main class="folha">
+    <div class="marca">Sistema Escolar</div>
+    <h1>QR Code Oficial de Saida</h1>
+    <p>
+      Imprima este QR Code e deixe no local de acesso. Ao escanear, ele abre a area de solicitacao de saida do aluno.
+    </p>
 
-<h1>QR Code Oficial</h1>
+    <canvas id="qrcode"></canvas>
 
-<canvas id="qrcode"></canvas>
+    <div class="url" id="url"></div>
 
-<script>
+    <button type="button" onclick="window.print()">
+      Imprimir QR Code
+    </button>
+  </main>
 
-QRCode.toCanvas(
-  document.getElementById("qrcode"),
-  "http://localhost:5500/acesso.html"
-);
+  <script>
+    const QR_SAIDA_TOKEN =
+      'MIRIAA_SOLICITAR_SAIDA_UNICO_2026';
 
-</script>
+    const destino =
+      'http://localhost:5173/solicitar-saida?qr=' +
+      encodeURIComponent(QR_SAIDA_TOKEN);
 
+    document.getElementById('url').textContent = destino;
+
+    QRCode.toCanvas(
+      document.getElementById('qrcode'),
+      destino,
+      {
+        width: 320,
+        margin: 2,
+        errorCorrectionLevel: 'H'
+      }
+    );
+  </script>
 </body>
 </html>

@@ -55,16 +55,10 @@ router.get('/lista', async (req, res) => {
 });
 
 
-const express =
-require('express');
+
 
 const jwt =
 require('jsonwebtoken');
 
-const router =
-express.Router();
-
-const Aluno =
-require('../models/Aluno');
 
 module.exports = router;
