@@ -16,6 +16,13 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "completo-backend"
+  });
+});
+
 app.use("/admin", adminRoutes);
 app.use("/aluno", alunoRoutes);
 app.use("/porteiro", porteiroRoutes);

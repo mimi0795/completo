@@ -18,10 +18,23 @@ interface Aluno {
   periodo?: string;
   criadoEm?: string;
   createdAt?: string;
+  estagio?: {
+    empresa?: string;
+    cargo?: string;
+    supervisor?: string;
+    dataInicio?: string;
+    dataFim?: string;
+    endereco?: string;
+  };
+  frequencia?: {
+    data: string;
+    hora: string;
+    status: string;
+  }[];
 }
 
 export default function SolicitarSaida() {
-  const API = 'http://localhost:5000';
+  const API = 'https://completo-vvuw.onrender.com';
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -116,9 +129,18 @@ export default function SolicitarSaida() {
         return;
       }
 
+      const respostaPerfil = await fetch(
+        `${API}/aluno/${alunoEncontrado._id}`
+      );
+
+      const alunoCompleto =
+        respostaPerfil.ok
+          ? await respostaPerfil.json()
+          : alunoEncontrado;
+
       localStorage.setItem(
         'alunoSelecionado',
-        JSON.stringify(alunoEncontrado)
+        JSON.stringify(alunoCompleto)
       );
 
       navigate('/portaria');

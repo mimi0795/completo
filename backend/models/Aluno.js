@@ -1,29 +1,77 @@
 const mongoose = require("mongoose");
 
-const AlunoSchema = new mongoose.Schema({
-
-  nome: {
-    type: String,
-    required: true
+const FrequenciaSchema = new mongoose.Schema(
+  {
+    data: String,
+    hora: String,
+    status: String
   },
+  { _id: false }
+);
 
-  email: {
-    type: String,
-    required: true,
-    unique: true
+const EstagioSchema = new mongoose.Schema(
+  {
+    empresa: String,
+    cargo: String,
+    supervisor: String,
+    dataInicio: String,
+    dataFim: String,
+    endereco: String
   },
+  { _id: false }
+);
 
-  senha: {
-    type: String,
-    required: true
+const AlunoSchema = new mongoose.Schema(
+  {
+    nome: {
+      type: String,
+      required: true
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+
+    senha: {
+      type: String,
+      required: true
+    },
+
+    matricula: {
+      type: String,
+      default: ""
+    },
+
+    curso: {
+      type: String,
+      default: ""
+    },
+
+    periodo: {
+      type: String,
+      default: ""
+    },
+
+    estagio: {
+      type: EstagioSchema,
+      default: () => ({})
+    },
+
+    frequencia: {
+      type: [FrequenciaSchema],
+      default: []
+    },
+
+    criadoEm: {
+      type: Date,
+      default: Date.now
+    }
   },
-
-  criadoEm: {
-    type: Date,
-    default: Date.now
+  {
+    timestamps: true
   }
-
-});
+);
 
 module.exports = mongoose.model("Aluno", AlunoSchema);
-

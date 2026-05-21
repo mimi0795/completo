@@ -3,26 +3,37 @@ const jwt = require("jsonwebtoken");
 
 exports.cadastro = async (req, res) => {
   try {
-    const { nome, email, senha } = req.body;
+    const {
+      nome,
+      email,
+      senha,
+      matricula,
+      curso,
+      periodo,
+      estagio,
+      frequencia
+    } = req.body;
 
     const existe = await Aluno.findOne({ email });
 
     if (existe) {
       return res.status(400).json({
-        msg: "Aluno já existe"
+        msg: "Aluno ja existe"
       });
     }
-
-
 
     const aluno = await Aluno.create({
       nome,
       email,
       senha,
+      matricula,
+      curso,
+      periodo,
+      estagio,
+      frequencia
     });
 
     res.status(201).json(aluno);
-
   } catch (error) {
     res.status(500).json(error);
   }
@@ -36,16 +47,14 @@ exports.login = async (req, res) => {
 
     if (!aluno) {
       return res.status(400).json({
-        msg: "Email não encontrado"
+        msg: "Email nao encontrado"
       });
     }
 
-      if (senha !== aluno.senha) {
-
+    if (senha !== aluno.senha) {
       return res.status(400).json({
-        msg: "Login inválido"
+        msg: "Login invalido"
       });
-
     }
 
     const token = jwt.sign(
@@ -58,24 +67,34 @@ exports.login = async (req, res) => {
       token,
       aluno
     });
-
   } catch (error) {
     res.status(500).json(error);
   }
 };
+
 exports.listar = async (req, res) => {
-
   try {
-
     const alunos = await Aluno.find()
-    .sort({ criadoEm: -1 });
+      .sort({ criadoEm: -1 });
 
     res.json(alunos);
-
   } catch (error) {
-
     res.status(500).json(error);
-
   }
+};
 
+exports.buscarPorId = async (req, res) => {
+  try {
+    const aluno = await Aluno.findById(req.params.id);
+
+    if (!aluno) {
+      return res.status(404).json({
+        msg: "Aluno nao encontrado"
+      });
+    }
+
+    res.json(aluno);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };

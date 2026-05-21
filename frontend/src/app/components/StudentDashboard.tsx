@@ -18,17 +18,19 @@ import {
 
 interface Aluno {
 
+  _id: string;
+
   nome: string;
 
-  matricula: string;
+  matricula?: string;
 
   email: string;
 
-  curso: string;
+  curso?: string;
 
-  periodo: string;
+  periodo?: string;
 
-  estagio: {
+  estagio?: {
 
     empresa: string;
 
@@ -44,7 +46,7 @@ interface Aluno {
 
   };
 
-  frequencia: [
+  frequencia?: [
 
     {
 
@@ -64,7 +66,7 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
 
-  const API = 'http://localhost:5000';
+  const API = 'https://completo-vvuw.onrender.com';
 
   /* =========================================
      ESTADOS
@@ -102,15 +104,27 @@ export default function StudentDashboard() {
       const alunoLocal =
         JSON.parse(alunoSalvo);
 
+      setAluno(alunoLocal);
+
       const resposta =
         await fetch(
           `${API}/aluno/${alunoLocal._id}`
         );
 
+      if (!resposta.ok) {
+        setLoading(false);
+        return;
+      }
+
       const dados =
         await resposta.json();
 
       setAluno(dados);
+
+      localStorage.setItem(
+        'aluno',
+        JSON.stringify(dados)
+      );
 
       setLoading(false);
 
@@ -169,16 +183,29 @@ export default function StudentDashboard() {
   ========================================= */
 
   function calculateDaysRemaining(
-    endDate: string
+    endDate?: string
   ) {
 
     if (!endDate) return 0;
 
-    const [day, month, year] =
-      endDate.split('/').map(Number);
+    let end: Date;
 
-    const end =
-      new Date(year, month - 1, day);
+    if (endDate.includes('/')) {
+
+      const [day, month, year] =
+        endDate.split('/').map(Number);
+
+      end = new Date(year, month - 1, day);
+
+    } else {
+
+      end = new Date(endDate);
+
+    }
+
+    if (Number.isNaN(end.getTime())) {
+      return 0;
+    }
 
     const today = new Date();
 
@@ -194,6 +221,14 @@ export default function StudentDashboard() {
     return diffDays > 0
       ? diffDays
       : 0;
+
+  }
+
+  function texto(valor?: string) {
+
+    return valor && valor.trim()
+      ? valor
+      : 'Nao informado';
 
   }
 
@@ -260,7 +295,7 @@ export default function StudentDashboard() {
 
               Bem-vindo,
               {' '}
-              {aluno.nome}
+              {texto(aluno.nome)}
 
             </p>
 
@@ -319,7 +354,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.nome}
+                      {texto(aluno.nome)}
 
                     </p>
 
@@ -343,7 +378,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.matricula}
+                      {texto(aluno.matricula)}
 
                     </p>
 
@@ -367,7 +402,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.email}
+                      {texto(aluno.email)}
 
                     </p>
 
@@ -391,7 +426,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.curso}
+                      {texto(aluno.curso)}
 
                     </p>
 
@@ -431,7 +466,7 @@ export default function StudentDashboard() {
 
                   <p className="text-zinc-900 font-medium text-lg">
 
-                    {aluno.estagio?.empresa}
+                    {texto(aluno.estagio?.empresa)}
 
                   </p>
 
@@ -449,7 +484,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.estagio?.cargo}
+                      {texto(aluno.estagio?.cargo)}
 
                     </p>
 
@@ -465,7 +500,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.estagio?.supervisor}
+                      {texto(aluno.estagio?.supervisor)}
 
                     </p>
 
@@ -487,7 +522,7 @@ export default function StudentDashboard() {
 
                     <p className="text-zinc-900">
 
-                      {aluno.estagio?.endereco}
+                      {texto(aluno.estagio?.endereco)}
 
                     </p>
 
@@ -541,7 +576,9 @@ export default function StudentDashboard() {
 
               <div className="space-y-2">
 
-                {aluno.frequencia?.map(
+                {aluno.frequencia?.length ? (
+
+                aluno.frequencia.map(
                   (item, index) => (
 
                     <div
@@ -580,6 +617,16 @@ export default function StudentDashboard() {
                     </div>
 
                   )
+                )
+
+                ) : (
+
+                  <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-200 text-zinc-500">
+
+                    Nenhuma frequencia registrada
+
+                  </div>
+
                 )}
 
               </div>

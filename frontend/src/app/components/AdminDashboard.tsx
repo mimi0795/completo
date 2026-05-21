@@ -152,7 +152,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'http://localhost:5000/aluno/listar'
+        'https://completo-vvuw.onrender.com/aluno/listar'
       );
 
       const dados = await resposta.json();
@@ -176,7 +176,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'http://localhost:5000/aluno/cadastro',
+        'https://completo-vvuw.onrender.com/aluno/cadastro',
         {
 
           method: 'POST',
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
     try {
 
       await fetch(
-        `http://localhost:5000/aluno/deletar/${id}`,
+        `https://completo-vvuw.onrender.com/aluno/deletar/${id}`,
         {
           method: 'DELETE'
         }
