@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import {
   User,
   Lock,
@@ -25,7 +26,7 @@ export default function LoginPage() {
   ========================================= */
 
   const [isCadastro, setIsCadastro] =
-  useState(false);
+    useState(false);
 
   /* =========================================
      CAMPOS
@@ -36,15 +37,13 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
 
   const [password, setPassword] =
-  useState('');
+    useState('');
 
   const [error, setError] = useState('');
 
   /* =========================================
      URL DO BACK-END
   ========================================= */
-
-  // PORTA DO NODE.JS
 
   const API = 'http://localhost:5000';
 
@@ -61,10 +60,6 @@ export default function LoginPage() {
     setError('');
 
     try {
-
-      /* =====================================
-         ROTAS DO BACK-END
-      ===================================== */
 
       let rota = '';
 
@@ -89,16 +84,19 @@ export default function LoginPage() {
         ) {
 
           rota =
-          `${API}/porteiro/cadastro`;
+            `${API}/porteiro/cadastro`;
 
         }
 
-        // ALUNO
+        // ALUNO NÃO PODE CADASTRAR
 
         else {
 
-          rota =
-          `${API}/aluno/cadastro`;
+          setError(
+            'Cadastro de aluno desativado'
+          );
+
+          return;
 
         }
 
@@ -114,7 +112,7 @@ export default function LoginPage() {
 
             headers: {
               'Content-Type':
-              'application/json'
+                'application/json'
             },
 
             body: JSON.stringify({
@@ -131,11 +129,7 @@ export default function LoginPage() {
         );
 
         const dados =
-        await resposta.json();
-
-        /* =====================================
-           ERRO
-        ===================================== */
+          await resposta.json();
 
         if (!resposta.ok) {
 
@@ -148,21 +142,13 @@ export default function LoginPage() {
 
         }
 
-        /* =====================================
-           SUCESSO
-        ===================================== */
-
         alert(
           'Cadastro realizado com sucesso'
         );
 
-        // LIMPAR
-
         setNome('');
         setEmail('');
         setPassword('');
-
-        // VOLTA PARA LOGIN
 
         setIsCadastro(false);
 
@@ -189,7 +175,7 @@ export default function LoginPage() {
       ) {
 
         rota =
-        `${API}/porteiro/login`;
+          `${API}/porteiro/login`;
 
       }
 
@@ -215,7 +201,7 @@ export default function LoginPage() {
 
           headers: {
             'Content-Type':
-            'application/json'
+              'application/json'
           },
 
           body: JSON.stringify({
@@ -230,7 +216,7 @@ export default function LoginPage() {
       );
 
       const dados =
-      await resposta.json();
+        await resposta.json();
 
       /* =====================================
          ERRO LOGIN
@@ -343,9 +329,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md">
 
-        {/* =====================================
-           TOPO
-        ===================================== */}
+        {/* TOPO */}
 
         <div className="text-center mb-8">
 
@@ -369,15 +353,11 @@ export default function LoginPage() {
 
         </div>
 
-        {/* =====================================
-           CARD
-        ===================================== */}
+        {/* CARD */}
 
         <div className="bg-white rounded-xl shadow-lg p-8">
 
-          {/* =====================================
-             BOTÕES
-          ===================================== */}
+          {/* BOTÕES */}
 
           <div className="grid grid-cols-3 gap-3 mb-6">
 
@@ -443,9 +423,7 @@ export default function LoginPage() {
 
           </div>
 
-          {/* =====================================
-             FORMULÁRIO
-          ===================================== */}
+          {/* FORMULÁRIO */}
 
           <form onSubmit={handleSubmit}>
 
@@ -573,27 +551,29 @@ export default function LoginPage() {
 
           </form>
 
-          {/* =====================================
-             TROCAR LOGIN/CADASTRO
-          ===================================== */}
+          {/* BOTÃO CADASTRO */}
 
-          <button
-            type="button"
-            onClick={() =>
-              setIsCadastro(
-                !isCadastro
-              )
-            }
-            className="w-full mt-4 border border-indigo-600 text-indigo-600 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-50"
-          >
+          {loginType !== 'entrada' && (
 
-            <UserPlus className="w-5 h-5" />
+            <button
+              type="button"
+              onClick={() =>
+                setIsCadastro(
+                  !isCadastro
+                )
+              }
+              className="w-full mt-4 border border-indigo-600 text-indigo-600 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-50"
+            >
 
-            {isCadastro
-              ? 'Já tenho conta'
-              : 'Criar conta'}
+              <UserPlus className="w-5 h-5" />
 
-          </button>
+              {isCadastro
+                ? 'Já tenho conta'
+                : 'Criar conta'}
+
+            </button>
+
+          )}
 
         </div>
 

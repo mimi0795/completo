@@ -1,5 +1,4 @@
 const Admin = require("../models/Admin");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.cadastro = async (req, res) => {
@@ -14,12 +13,10 @@ exports.cadastro = async (req, res) => {
       });
     }
 
-    const senhaHash = await bcrypt.hash(senha, 10);
-
     const admin = await Admin.create({
       nome,
       email,
-      senha: senhaHash
+      senha,
     });
 
     res.status(201).json(admin);
@@ -41,15 +38,12 @@ exports.login = async (req, res) => {
       });
     }
 
-    const senhaCorreta = await bcrypt.compare(
-      senha,
-      admin.senha
-    );
+      if (senha !== admin.senha) {
 
-    if (!senhaCorreta) {
       return res.status(400).json({
-        msg: "Senha incorreta"
+        msg: "Login inválido"
       });
+
     }
 
     const token = jwt.sign(

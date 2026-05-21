@@ -1,5 +1,4 @@
 const Aluno = require("../models/Aluno");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.cadastro = async (req, res) => {
@@ -14,12 +13,12 @@ exports.cadastro = async (req, res) => {
       });
     }
 
-    const senhaHash = await bcrypt.hash(senha, 10);
+
 
     const aluno = await Aluno.create({
       nome,
       email,
-      senha: senhaHash
+      senha,
     });
 
     res.status(201).json(aluno);
@@ -41,15 +40,12 @@ exports.login = async (req, res) => {
       });
     }
 
-    const senhaCorreta = await bcrypt.compare(
-      senha,
-      aluno.senha
-    );
+      if (senha !== aluno.senha) {
 
-    if (!senhaCorreta) {
       return res.status(400).json({
-        msg: "Senha incorreta"
+        msg: "Login inválido"
       });
+
     }
 
     const token = jwt.sign(
