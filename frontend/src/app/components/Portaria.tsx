@@ -81,11 +81,11 @@ export default function DashboardPorteiro() {
       setErroLista('');
 
       const resposta =
-  await fetch(`${API}/aluno/listar`);
+  await fetch(`${API}aluno/listar`);
   
       const respostaFinal =
         resposta.status === 404
-          ? await fetch(`${API}/aluno/listar`)
+          ? await fetch(`${API}aluno/listar`)
           : resposta;
 
       if (!respostaFinal.ok) {
@@ -119,7 +119,7 @@ export default function DashboardPorteiro() {
   async function abrirAluno(aluno: Aluno) {
     try {
       const resposta = await fetch(
-        `${API}/aluno/${aluno._id}`
+        `${API}aluno/${aluno._id}`
       );
 
       const alunoCompleto =
