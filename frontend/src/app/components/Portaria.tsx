@@ -81,8 +81,8 @@ export default function DashboardPorteiro() {
       setErroLista('');
 
       const resposta =
-        await fetch(`${API}/aluno/lista`);
-
+  await fetch(`${API}/aluno/listar`);
+  
       const respostaFinal =
         resposta.status === 404
           ? await fetch(`${API}/aluno/listar`)
