@@ -44,8 +44,7 @@ export default function LoginPage() {
   /* =========================================
      URL DO BACK-END
   ========================================= */
-
- const API = "http://localhost:5000";
+  const API = "https://completo-a3yjj.onrender.com";
 
   /* =========================================
      ENVIAR
