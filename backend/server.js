@@ -13,7 +13,9 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://completo-1-9no9.onrender.com"
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
