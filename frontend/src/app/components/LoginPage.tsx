@@ -44,7 +44,7 @@ export default function LoginPage() {
   /* =========================================
      URL DO BACK-END
   ========================================= */
-  const API = "https://completo-a3yjj.onrender.com";
+  const API = "https://completo-a3yjj.onrender.com/";
 
   /* =========================================
      ENVIAR
@@ -113,6 +113,8 @@ export default function LoginPage() {
               'Content-Type':
                 'application/json'
             },
+
+              mode: 'cors',
 
             body: JSON.stringify({
 
@@ -202,6 +204,7 @@ export default function LoginPage() {
             'Content-Type':
               'application/json'
           },
+            mode: 'cors',
 
           body: JSON.stringify({
 

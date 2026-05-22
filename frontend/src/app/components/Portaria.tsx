@@ -43,7 +43,7 @@ interface Aluno {
 }
 
 export default function DashboardPorteiro() {
- const API = "https://completo-a3yjj.onrender.com";
+ const API = "https://completo-a3yjj.onrender.com/";
   const navigate = useNavigate();
 
   const [alunos, setAlunos] =
