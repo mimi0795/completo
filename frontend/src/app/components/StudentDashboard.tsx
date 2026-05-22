@@ -66,7 +66,7 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
 
-  const API = "https://completo-a3yjj.onrender.com";
+  const API = "https://completo-a3yj.onrender.com";
 
   /* =========================================
      ESTADOS

@@ -141,7 +141,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'https://completo-a3yjj.onrender.com/aluno/listar'
+        'https://completo-a3yj.onrender.com/aluno/listar'
       );
 
       const dados = await resposta.json();
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'https://completo-a3yjj.onrender.com/aluno/cadastro',
+        'https://completo-a3yj.onrender.com/aluno/cadastro',
         {
 
           method: 'POST',
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
     try {
 
       await fetch(
-        `https://completo-a3yjj.onrender.com/aluno/deletar/${id}`,
+        `https://completo-a3yj.onrender.com/aluno/deletar/${id}`,
         {
           method: 'DELETE'
         }

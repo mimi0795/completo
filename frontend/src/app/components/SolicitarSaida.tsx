@@ -34,7 +34,7 @@ interface Aluno {
 }
 
 export default function SolicitarSaida() {
-const API = "https://completo-a3yjj.onrender.com";
+const API = "https://completo-a3yj.onrender.com";
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');

@@ -44,7 +44,7 @@ export default function LoginPage() {
   /* =========================================
      URL DO BACK-END
   ========================================= */
-  const API = "https://completo-a3yjj.onrender.com/";
+  const API = "https://completo-a3yj.onrender.com/";
 
   /* =========================================
      ENVIAR
