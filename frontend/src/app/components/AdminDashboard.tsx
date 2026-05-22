@@ -227,6 +227,7 @@ export default function AdminDashboard() {
 
       await fetch(
         `https://completo-a3yj.onrender.com/aluno/deletar/${id}`,
+        
         {
           method: 'DELETE'
         }

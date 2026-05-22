@@ -45,6 +45,7 @@ export default function LoginPage() {
      URL DO BACK-END
   ========================================= */
   const API = "https://completo-a3yj.onrender.com/";
+  console.log("API:", API);
 
   /* =========================================
      ENVIAR
@@ -72,7 +73,7 @@ export default function LoginPage() {
 
         if (loginType === 'admin') {
 
-          rota = `${API}/admin/cadastro`;
+          rota = `${API}admin/cadastro`;
 
         }
 
@@ -83,7 +84,7 @@ export default function LoginPage() {
         ) {
 
           rota =
-            `${API}/porteiro/cadastro`;
+            `${API}porteiro/cadastro`;
 
         }
 
@@ -163,7 +164,7 @@ export default function LoginPage() {
 
       if (loginType === 'admin') {
 
-        rota = `${API}/admin/login`;
+        rota = `${API}admin/login`;
 
       }
 
@@ -176,7 +177,7 @@ export default function LoginPage() {
       ) {
 
         rota =
-          `${API}/porteiro/login`;
+          `${API}porteiro/login`;
 
       }
 
@@ -186,7 +187,7 @@ export default function LoginPage() {
 
       else {
 
-        rota = `${API}/aluno/login`;
+        rota = `${API}aluno/login`;
 
       }
 

@@ -11,10 +11,9 @@ exports.cadastro = async (req, res) => {
       return res.status(400).json({
         msg: "Administrador já existe"
       });
-    }
-   
 
-   
+    }
+    
     const admin = await Admin.create({
       nome,
       email,
