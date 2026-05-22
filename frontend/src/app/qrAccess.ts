@@ -1,5 +1,5 @@
 export const QR_SAIDA_TOKEN =
-  'MIRIAA_SOLICITAR_SAIDA_UNICO_2026';
+  '555';
 
 export function isQrSaidaValido(
   decodedText: string
