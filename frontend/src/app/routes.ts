@@ -26,4 +26,9 @@ export const router = createHashRouter([
     path: "/solicitar-saida",
     Component: SolicitarSaida,
   },
+
+  {
+  path: "/index.html",
+  Component: SolicitarSaida,
+}, 
 ]);
