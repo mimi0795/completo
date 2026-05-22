@@ -66,7 +66,7 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
 
-  const API = 'https://completo-vvuw.onrender.com';
+  const API = "http://localhost:5000";
 
   /* =========================================
      ESTADOS

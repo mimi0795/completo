@@ -47,17 +47,6 @@ interface Student {
   };
 }
 
-const qrScanData = [
-  {
-    id: 1,
-    nome: 'Ana Silva',
-    curso: 'Engenharia de Software',
-    empresa: 'Tech Solutions',
-    data: '13/04/2026',
-    hora: '09:15'
-  }
-];
-
 const stats = {
   concluidos: 124,
   emAndamento: 87,
@@ -152,7 +141,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'https://completo-vvuw.onrender.com/aluno/listar'
+        'http://localhost:5000/aluno/listar'
       );
 
       const dados = await resposta.json();
@@ -176,7 +165,7 @@ export default function AdminDashboard() {
     try {
 
       const resposta = await fetch(
-        'https://completo-vvuw.onrender.com/aluno/cadastro',
+        'http://localhost:5000/aluno/cadastro',
         {
 
           method: 'POST',
@@ -237,7 +226,7 @@ export default function AdminDashboard() {
     try {
 
       await fetch(
-        `https://completo-vvuw.onrender.com/aluno/deletar/${id}`,
+        `http://localhost:5000/aluno/deletar/${id}`,
         {
           method: 'DELETE'
         }

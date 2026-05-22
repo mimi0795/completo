@@ -25,6 +25,15 @@ exports.cadastro = async (req, res) => {
 
     }
 
+    // Verifica senha
+        const senhaExiste = await Admin.findOne({ senha });
+    
+        if (senhaExiste) {
+          return res.status(400).json({
+            msg: "Esta senha já está em uso"
+          });
+        }
+
     const porteiro =
     await Porteiro.create({
 
@@ -79,6 +88,8 @@ exports.login = async (req, res) => {
       });
 
     }
+
+     
 
     /* =========================
        TOKEN

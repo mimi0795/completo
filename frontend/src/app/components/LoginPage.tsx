@@ -45,7 +45,7 @@ export default function LoginPage() {
      URL DO BACK-END
   ========================================= */
 
-  const API = 'https://completo-vvuw.onrender.com';
+ const API = "http://localhost:5000";
 
   /* =========================================
      ENVIAR

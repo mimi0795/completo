@@ -8,14 +8,16 @@ const PorteiroSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
-
-  senha: String,
+senha: {
+    type: String,
+    unique: true,
+    required: true
+  },
 
   criadoEm: {
     type: Date,
     default: Date.now
   }
-
 });
 
 module.exports = mongoose.model("Porteiro", PorteiroSchema);

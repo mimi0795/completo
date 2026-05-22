@@ -3,12 +3,18 @@ const mongoose = require("mongoose");
 const AdminSchema = new mongoose.Schema({
 
   nome: String,
+
   email: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
 
-  senha: String,
+  senha: {
+    type: String,
+    unique: true,
+    required: true
+  },
 
   criadoEm: {
     type: Date,

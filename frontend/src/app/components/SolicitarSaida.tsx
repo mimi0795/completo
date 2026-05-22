@@ -34,7 +34,7 @@ interface Aluno {
 }
 
 export default function SolicitarSaida() {
-  const API = 'https://completo-vvuw.onrender.com';
+ const API = "http://localhost:5000";
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');

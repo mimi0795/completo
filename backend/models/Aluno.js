@@ -34,10 +34,12 @@ const AlunoSchema = new mongoose.Schema(
       unique: true
     },
 
-    senha: {
-      type: String,
-      required: true
-    },
+   senha: {
+    type: String,
+    unique: true,
+    required: true
+  },
+
 
     matricula: {
       type: String,

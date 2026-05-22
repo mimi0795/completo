@@ -57,6 +57,8 @@ exports.login = async (req, res) => {
       });
     }
 
+  
+
     const token = jwt.sign(
       { id: aluno._id },
       process.env.JWT_SECRET,
