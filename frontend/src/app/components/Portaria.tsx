@@ -42,6 +42,16 @@ interface Aluno {
   frequencia?: Frequencia[];
 }
 
+interface SolicitacaoSaida {
+  _id: string;
+  alunoId: string;
+  nome: string;
+  email: string;
+  data: string;
+  hora: string;
+  status: string;
+}
+
 export default function DashboardPorteiro() {
  const API = "https://completo-a3yj.onrender.com/";
   const navigate = useNavigate();
@@ -61,7 +71,15 @@ export default function DashboardPorteiro() {
   const [alunoSelecionado, setAlunoSelecionado] =
     useState<Aluno | null>(null);
 
+  const [solicitacaoAtual, setSolicitacaoAtual] =
+    useState<SolicitacaoSaida | null>(null);
+
   useEffect(() => {
+    if (!localStorage.getItem('tokenPorteiro')) {
+      navigate('/');
+      return;
+    }
+
     const alunoSalvo =
       localStorage.getItem(
         'alunoSelecionado'
@@ -74,7 +92,16 @@ export default function DashboardPorteiro() {
     }
 
     buscarAlunos();
-  }, []);
+    buscarSolicitacoesPendentes();
+
+    const intervalo = window.setInterval(() => {
+      buscarSolicitacoesPendentes();
+    }, 5000);
+
+    return () => {
+      window.clearInterval(intervalo);
+    };
+  }, [navigate]);
 
   async function buscarAlunos() {
     try {
@@ -133,6 +160,7 @@ export default function DashboardPorteiro() {
       );
 
       setAlunoSelecionado(alunoCompleto);
+      setSolicitacaoAtual(null);
     } catch (error) {
       console.log(error);
 
@@ -142,6 +170,73 @@ export default function DashboardPorteiro() {
       );
 
       setAlunoSelecionado(aluno);
+      setSolicitacaoAtual(null);
+    }
+  }
+
+  async function abrirAlunoPorSolicitacao(
+    solicitacao: SolicitacaoSaida
+  ) {
+    try {
+      await fetch(
+        `${API}confirmacao/${solicitacao._id}/atender`,
+        {
+          method: 'PATCH'
+        }
+      );
+
+      const resposta = await fetch(
+        `${API}aluno/${solicitacao.alunoId}`
+      );
+
+      if (!resposta.ok) {
+        throw new Error(
+          'Aluno da solicitacao nao encontrado'
+        );
+      }
+
+      const alunoCompleto = await resposta.json();
+
+      localStorage.setItem(
+        'alunoSelecionado',
+        JSON.stringify(alunoCompleto)
+      );
+
+      setSolicitacaoAtual(solicitacao);
+      setAlunoSelecionado(alunoCompleto);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function buscarSolicitacoesPendentes() {
+    if (
+      !localStorage.getItem('tokenPorteiro') ||
+      localStorage.getItem('alunoSelecionado')
+    ) {
+      return;
+    }
+
+    try {
+      const resposta = await fetch(
+        `${API}confirmacao/pendentes`
+      );
+
+      if (!resposta.ok) return;
+
+      const solicitacoes: SolicitacaoSaida[] =
+        await resposta.json();
+
+      const primeiraSolicitacao =
+        solicitacoes[0];
+
+      if (primeiraSolicitacao) {
+        await abrirAlunoPorSolicitacao(
+          primeiraSolicitacao
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -151,6 +246,7 @@ export default function DashboardPorteiro() {
     );
 
     setAlunoSelecionado(null);
+    setSolicitacaoAtual(null);
   }
 
   function sair() {
@@ -203,6 +299,15 @@ export default function DashboardPorteiro() {
       alert(
         `Saida liberada para ${alunoSelecionado.nome}`
       );
+
+      if (solicitacaoAtual) {
+        await fetch(
+          `${API}confirmacao/${solicitacaoAtual._id}/concluir`,
+          {
+            method: 'PATCH'
+          }
+        );
+      }
     } catch (error) {
       console.log(error);
       alert('Erro ao conectar com servidor');
@@ -210,6 +315,7 @@ export default function DashboardPorteiro() {
     }
 
     setAlunoSelecionado(null);
+    setSolicitacaoAtual(null);
     localStorage.removeItem(
       'alunoSelecionado'
     );
@@ -337,6 +443,12 @@ export default function DashboardPorteiro() {
                 <h2 className="text-2xl font-bold text-zinc-900">
                   {texto(alunoSelecionado.nome)}
                 </h2>
+
+                {solicitacaoAtual && (
+                  <p className="text-sm text-green-700 mt-1">
+                    Solicitacao recebida as {solicitacaoAtual.hora}
+                  </p>
+                )}
               </div>
             </div>
 

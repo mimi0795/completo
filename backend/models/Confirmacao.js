@@ -12,6 +12,11 @@ const ConfirmacaoSchema = new mongoose.Schema({
 
   hora:String,
 
+  status:{
+    type:String,
+    default:"pendente"
+  },
+
   dataCompleta:{
     type:Date,
     default:Date.now

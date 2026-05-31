@@ -44,6 +44,7 @@ export default function SolicitarSaida() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [enviado, setEnviado] = useState(false);
 
   useEffect(() => {
 
@@ -142,11 +143,44 @@ export default function SolicitarSaida() {
           : alunoEncontrado;
 
       localStorage.setItem(
-        'alunoSelecionado',
+        'ultimaSolicitacaoSaida',
         JSON.stringify(alunoCompleto)
       );
 
-      navigate('/portaria');
+      const agora = new Date();
+
+      const respostaSolicitacao = await fetch(
+        `${API}/confirmacao`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            alunoId: alunoCompleto._id,
+            nome: alunoCompleto.nome,
+            email: alunoCompleto.email,
+            data: agora.toLocaleDateString('pt-BR'),
+            hora: agora.toLocaleTimeString('pt-BR', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          })
+        }
+      );
+
+      const dadosSolicitacao =
+        await respostaSolicitacao.json();
+
+      if (!respostaSolicitacao.ok) {
+        setError(
+          dadosSolicitacao.msg ||
+            'Erro ao enviar solicitacao para a portaria'
+        );
+        return;
+      }
+
+      setEnviado(true);
     } catch (error) {
       console.log(error);
       setError('Erro ao conectar com servidor');
@@ -177,8 +211,14 @@ export default function SolicitarSaida() {
           </h1>
 
           <p className="text-zinc-600 mb-6">
-            Digite o email do aluno para abrir o perfil correspondente na portaria.
+            Digite o email do aluno para enviar a solicitacao ao dispositivo logado na portaria.
           </p>
+
+          {enviado && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+              Solicitacao enviada. Aguarde a liberacao no dispositivo da portaria.
+            </div>
+          )}
 
           <form
             onSubmit={buscarPerfilPorEmail}
@@ -198,6 +238,7 @@ export default function SolicitarSaida() {
                   onChange={(e) =>
                     setEmail(e.target.value)
                   }
+                  disabled={enviado}
                   className="w-full pl-10 pr-4 py-3 border border-zinc-300 rounded-lg outline-none focus:border-indigo-600"
                   placeholder="email@escola.com"
                   autoFocus
@@ -213,13 +254,15 @@ export default function SolicitarSaida() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || enviado}
               className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white py-3 rounded-lg transition flex items-center justify-center gap-2"
             >
               <LogIn className="w-5 h-5" />
-              {loading
+              {enviado
+                ? 'Solicitacao enviada'
+                : loading
                 ? 'Buscando...'
-                : 'Abrir na portaria'}
+                : 'Enviar para portaria'}
             </button>
           </form>
         </div>
