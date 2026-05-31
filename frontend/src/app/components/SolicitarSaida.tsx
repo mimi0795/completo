@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import {
   ArrowLeft,
   LogIn,
   Mail,
   ShieldCheck
 } from 'lucide-react';
-import { QR_SAIDA_TOKEN } from '../qrAccess';
+import {
+  QR_SAIDA_TOKEN,
+  isQrSaidaTokenValido
+} from '../qrAccess';
 
 interface Aluno {
   _id: string;
@@ -34,8 +37,9 @@ interface Aluno {
 }
 
 export default function SolicitarSaida() {
-const API = "https://completo-a3yj.onrender.com";
+  const API = "https://completo-a3yj.onrender.com";
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -43,15 +47,14 @@ const API = "https://completo-a3yj.onrender.com";
 
   useEffect(() => {
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+    const params = new URLSearchParams(
+      location.search || window.location.search
+    );
 
     const qrToken =
       params.get('qr');
 
-    if (qrToken === QR_SAIDA_TOKEN) {
+    if (isQrSaidaTokenValido(qrToken)) {
       sessionStorage.setItem(
         'acessoSolicitarSaida',
         JSON.stringify({
@@ -79,7 +82,7 @@ const API = "https://completo-a3yj.onrender.com";
 
     if (
       acesso.origem !== 'qr-code' ||
-      acesso.codigo !== QR_SAIDA_TOKEN ||
+      !isQrSaidaTokenValido(acesso.codigo) ||
       expirado
     ) {
       sessionStorage.removeItem(
@@ -88,7 +91,7 @@ const API = "https://completo-a3yj.onrender.com";
       navigate('/');
     }
 
-  }, [navigate]);
+  }, [location.search, navigate]);
 
   async function buscarPerfilPorEmail(
     e: React.FormEvent

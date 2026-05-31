@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -8,10 +8,44 @@ import {
   Shield,
   UserPlus
 } from 'lucide-react';
+import {
+  QR_SAIDA_TOKEN,
+  isQrSaidaTokenValido
+} from '../qrAccess';
 
 export default function LoginPage() {
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const path = window.location.pathname;
+
+    if (
+      path !== '/solicitar-saida' &&
+      path !== '/solicita-saida'
+    ) {
+      return;
+    }
+
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    if (!isQrSaidaTokenValido(params.get('qr'))) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      'acessoSolicitarSaida',
+      JSON.stringify({
+        origem: 'qr-code',
+        codigo: QR_SAIDA_TOKEN,
+        criadoEm: Date.now()
+      })
+    );
+
+    navigate('/solicitar-saida');
+  }, [navigate]);
 
   /* =========================================
      TIPOS DE LOGIN

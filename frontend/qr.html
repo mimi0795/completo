@@ -123,8 +123,14 @@ button {
     const QR_SAIDA_TOKEN =
       'MIRIAA_SOLICITAR_SAIDA_UNICO_2026';
 
+    const origem =
+      window.location.origin &&
+      window.location.origin !== 'null'
+        ? window.location.origin
+        : 'http://localhost:5173';
+
     const destino =
-      'http://localhost:5173/solicitar-saida?qr=' +
+      origem + '/#/solicitar-saida?qr=' +
       encodeURIComponent(QR_SAIDA_TOKEN);
 
     document.getElementById('url').textContent = destino;

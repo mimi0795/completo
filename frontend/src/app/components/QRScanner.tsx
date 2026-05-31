@@ -11,11 +11,34 @@ export default function QRScanner({ onScanSuccess }: QRScannerProps) {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const isStoppingRef = useRef(false);
+
+  const stopScanning = async () => {
+    if (scannerRef.current && !isStoppingRef.current) {
+      try {
+        isStoppingRef.current = true;
+        await scannerRef.current.stop();
+        scannerRef.current.clear();
+        scannerRef.current = null;
+      } catch (err) {
+        console.error('Error stopping scanner:', err);
+      } finally {
+        isStoppingRef.current = false;
+      }
+    }
+
+    setIsScanning(false);
+  };
 
   const startScanning = async () => {
+    if (scannerRef.current) {
+      return;
+    }
+
     try {
       setError(null);
       setScanResult(null);
+      setIsScanning(true);
 
       const scanner = new Html5Qrcode('qr-reader');
       scannerRef.current = scanner;
@@ -29,37 +52,24 @@ export default function QRScanner({ onScanSuccess }: QRScannerProps) {
         (decodedText) => {
           setScanResult(decodedText);
           onScanSuccess(decodedText);
-          stopScanning();
+          void stopScanning();
         },
         () => {
-          // Ignore errors during scanning
+          // Ignore scan misses while the camera is active.
         }
       );
-
-      setIsScanning(true);
     } catch (err) {
-      setError('Erro ao acessar a câmera. Verifique as permissões.');
+      scannerRef.current = null;
+      setIsScanning(false);
+      setError('Erro ao acessar a camera. Verifique as permissoes.');
       console.error('Error starting scanner:', err);
     }
-  };
-
-  const stopScanning = async () => {
-    if (scannerRef.current) {
-      try {
-        await scannerRef.current.stop();
-        scannerRef.current.clear();
-        scannerRef.current = null;
-      } catch (err) {
-        console.error('Error stopping scanner:', err);
-      }
-    }
-    setIsScanning(false);
   };
 
   useEffect(() => {
     return () => {
       if (scannerRef.current) {
-        stopScanning();
+        void stopScanning();
       }
     };
   }, []);
@@ -76,30 +86,40 @@ export default function QRScanner({ onScanSuccess }: QRScannerProps) {
           <button
             onClick={startScanning}
             className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center gap-2"
+            type="button"
           >
             <QrCode className="w-5 h-5" />
             Iniciar Scanner
           </button>
         )}
 
+        <div
+          id="qr-reader"
+          className={`w-full rounded-lg overflow-hidden border-2 border-indigo-600 ${
+            isScanning ? 'block' : 'hidden'
+          }`}
+        />
+
         {isScanning && (
-          <>
-            <div id="qr-reader" className="w-full rounded-lg overflow-hidden border-2 border-indigo-600"></div>
-            <button
-              onClick={stopScanning}
-              className="w-full bg-zinc-600 text-white py-3 rounded-lg hover:bg-zinc-700 transition-colors font-medium"
-            >
-              Parar Scanner
-            </button>
-          </>
+          <button
+            onClick={stopScanning}
+            className="w-full bg-zinc-600 text-white py-3 rounded-lg hover:bg-zinc-700 transition-colors font-medium"
+            type="button"
+          >
+            Parar Scanner
+          </button>
         )}
 
         {scanResult && (
           <div className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
             <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-green-900 font-medium mb-1">Presença registrada com sucesso!</p>
-              <p className="text-green-700 text-sm">Código: {scanResult}</p>
+              <p className="text-green-900 font-medium mb-1">
+                QR Code lido com sucesso!
+              </p>
+              <p className="text-green-700 text-sm">
+                Codigo: {scanResult}
+              </p>
             </div>
           </div>
         )}
@@ -116,7 +136,7 @@ export default function QRScanner({ onScanSuccess }: QRScannerProps) {
         {!isScanning && !scanResult && (
           <div className="text-center py-8 text-zinc-500">
             <QrCode className="w-16 h-16 mx-auto mb-3 opacity-30" />
-            <p>Clique no botão acima para escanear o QR Code da empresa</p>
+            <p>Clique no botao acima para escanear o QR Code da empresa</p>
           </div>
         )}
       </div>
