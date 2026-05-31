@@ -6,6 +6,7 @@ const {
   salvar,
   listar,
   listarPendentes,
+  buscarPorId,
   atender,
   concluir
 } = require(
@@ -19,6 +20,8 @@ router.get("/pendentes", listarPendentes);
 router.patch("/:id/atender", atender);
 
 router.patch("/:id/concluir", concluir);
+
+router.get("/:id", buscarPorId);
 
 router.get("/", listar);
 

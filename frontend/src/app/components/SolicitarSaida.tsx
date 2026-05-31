@@ -45,6 +45,9 @@ export default function SolicitarSaida() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [solicitacaoId, setSolicitacaoId] =
+    useState('');
+  const [alunoId, setAlunoId] = useState('');
 
   useEffect(() => {
 
@@ -93,6 +96,65 @@ export default function SolicitarSaida() {
     }
 
   }, [location.search, navigate]);
+
+  useEffect(() => {
+    if (!enviado || !solicitacaoId || !alunoId) {
+      return;
+    }
+
+    const intervalo = window.setInterval(async () => {
+      try {
+        const resposta = await fetch(
+          `${API}/confirmacao/${solicitacaoId}`
+        );
+
+        if (!resposta.ok) return;
+
+        const solicitacao = await resposta.json();
+
+        if (solicitacao.status !== 'concluida') {
+          return;
+        }
+
+        const respostaAluno = await fetch(
+          `${API}/aluno/${alunoId}`
+        );
+
+        if (!respostaAluno.ok) return;
+
+        const alunoAtualizado =
+          await respostaAluno.json();
+
+        localStorage.setItem(
+          'aluno',
+          JSON.stringify(alunoAtualizado)
+        );
+
+        sessionStorage.setItem(
+          'mensagemAluno',
+          'Liberado'
+        );
+
+        sessionStorage.removeItem(
+          'acessoSolicitarSaida'
+        );
+
+        navigate('/entrada');
+      } catch (error) {
+        console.log(error);
+      }
+    }, 3000);
+
+    return () => {
+      window.clearInterval(intervalo);
+    };
+  }, [
+    API,
+    alunoId,
+    enviado,
+    navigate,
+    solicitacaoId
+  ]);
 
   async function buscarPerfilPorEmail(
     e: React.FormEvent
@@ -146,6 +208,7 @@ export default function SolicitarSaida() {
         'ultimaSolicitacaoSaida',
         JSON.stringify(alunoCompleto)
       );
+      setAlunoId(alunoCompleto._id);
 
       const agora = new Date();
 
@@ -180,6 +243,9 @@ export default function SolicitarSaida() {
         return;
       }
 
+      setSolicitacaoId(
+        dadosSolicitacao.confirmacao?._id || ''
+      );
       setEnviado(true);
     } catch (error) {
       console.log(error);

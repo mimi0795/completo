@@ -85,6 +85,29 @@ exports.listarPendentes = async (req, res) => {
 
 };
 
+exports.buscarPorId = async (req, res) => {
+
+  try {
+
+    const confirmacao =
+    await Confirmacao.findById(req.params.id);
+
+    if (!confirmacao) {
+      return res.status(404).json({
+        msg:"Solicitacao nao encontrada"
+      });
+    }
+
+    res.json(confirmacao);
+
+  } catch (error) {
+
+    res.status(500).json(error);
+
+  }
+
+};
+
 exports.atender = async (req, res) => {
 
   try {

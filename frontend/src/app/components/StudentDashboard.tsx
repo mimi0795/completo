@@ -78,11 +78,22 @@ export default function StudentDashboard() {
   const [loading, setLoading] =
     useState(true);
 
+  const [mensagemAluno, setMensagemAluno] =
+    useState('');
+
   /* =========================================
      PEGAR ALUNO LOGADO
   ========================================= */
 
   useEffect(() => {
+    const mensagemSalva =
+      sessionStorage.getItem('mensagemAluno');
+
+    if (mensagemSalva) {
+      setMensagemAluno(mensagemSalva);
+      sessionStorage.removeItem('mensagemAluno');
+    }
+
     pegarAluno();
   }, [navigate]);
 
@@ -319,6 +330,12 @@ export default function StudentDashboard() {
       {/* MAIN */}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+
+        {mensagemAluno && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg font-medium">
+            {mensagemAluno}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
