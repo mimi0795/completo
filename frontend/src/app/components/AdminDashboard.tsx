@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Users,
@@ -45,6 +45,14 @@ interface Student {
     dataFim: string;
     endereco: string;
   };
+
+  frequencia?: Frequencia[];
+}
+
+interface Frequencia {
+  data: string;
+  hora: string;
+  status: string;
 }
 
 const stats = {
@@ -106,6 +114,10 @@ export default function AdminDashboard() {
     navigate('/');
   };
 
+  useEffect(() => {
+    carregarAlunos();
+  }, []);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -146,7 +158,9 @@ export default function AdminDashboard() {
 
       const dados = await resposta.json();
 
-      setStudents(dados);
+      if (Array.isArray(dados)) {
+        setStudents(dados);
+      }
 
     } catch (error) {
 
@@ -243,6 +257,41 @@ export default function AdminDashboard() {
 
   };
 
+  const hoje = new Date().toLocaleDateString(
+    'pt-BR'
+  );
+
+  const totalAlunos = students.length;
+
+  const alunosComEstagio = students.filter(
+    (student) =>
+      student.estagio?.empresa?.trim() ||
+      student.estagio?.cargo?.trim()
+  ).length;
+
+  const frequenciasHoje = students.flatMap(
+    (student) =>
+      (student.frequencia || [])
+        .filter((item) => item.data === hoje)
+        .map((item) => ({
+          aluno: student.nome,
+          email: student.email,
+          curso: student.curso,
+          ...item
+        }))
+  );
+
+  const entradasHoje = frequenciasHoje.filter(
+    (item) =>
+      item.status.toLowerCase().includes('entrada')
+  ).length;
+
+  const saidasHoje = frequenciasHoje.filter(
+    (item) =>
+      item.status.toLowerCase().includes('saida') ||
+      item.status.toLowerCase().includes('saída')
+  ).length;
+
   return (
 
     <div className="min-h-screen bg-zinc-50">
@@ -334,22 +383,155 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center justify-between mb-4">
 
-                  <div className="p-3 bg-zinc-100 rounded-lg">
+                  <div className="p-3 bg-indigo-50 rounded-lg">
 
-                    <Users className="w-6 h-6 text-zinc-700" />
+                    <Users className="w-6 h-6 text-indigo-600" />
 
                   </div>
 
                 </div>
 
                 <div className="text-3xl font-bold text-zinc-900 mb-1">
-                  {stats.total}
+                  {totalAlunos}
                 </div>
 
                 <div className="text-zinc-600">
-                  Total de Alunos
+                  Alunos cadastrados
                 </div>
 
+              </div>
+
+              <div className="bg-white p-6 border border-zinc-200 rounded-lg">
+
+                <div className="p-3 bg-blue-50 rounded-lg w-fit mb-4">
+                  <Clock className="w-6 h-6 text-blue-600" />
+                </div>
+
+                <div className="text-3xl font-bold text-zinc-900 mb-1">
+                  {alunosComEstagio}
+                </div>
+
+                <div className="text-zinc-600">
+                  Com estagio
+                </div>
+
+              </div>
+
+              <div className="bg-white p-6 border border-zinc-200 rounded-lg">
+
+                <div className="p-3 bg-green-50 rounded-lg w-fit mb-4">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                </div>
+
+                <div className="text-3xl font-bold text-zinc-900 mb-1">
+                  {entradasHoje}
+                </div>
+
+                <div className="text-zinc-600">
+                  Entradas hoje
+                </div>
+
+              </div>
+
+              <div className="bg-white p-6 border border-zinc-200 rounded-lg">
+
+                <div className="p-3 bg-amber-50 rounded-lg w-fit mb-4">
+                  <TrendingDown className="w-6 h-6 text-amber-600" />
+                </div>
+
+                <div className="text-3xl font-bold text-zinc-900 mb-1">
+                  {saidasHoje}
+                </div>
+
+                <div className="text-zinc-600">
+                  Saidas hoje
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
+
+              <div className="p-6 border-b border-zinc-200 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-zinc-900 font-semibold text-xl">
+                    Frequencia diaria
+                  </h2>
+
+                  <p className="text-zinc-500 mt-1">
+                    Entradas e saidas registradas em {hoje}
+                  </p>
+                </div>
+
+                <div className="px-3 py-1 bg-zinc-100 text-zinc-700 rounded-full text-sm">
+                  {frequenciasHoje.length} registros
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-zinc-50 border-b border-zinc-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left">
+                        Aluno
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        Curso
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        Hora
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        Tipo
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {frequenciasHoje.length ? (
+                      frequenciasHoje.map((item, index) => (
+                        <tr
+                          key={`${item.email}-${item.hora}-${index}`}
+                          className="border-b border-zinc-100"
+                        >
+                          <td className="px-6 py-4">
+                            <div className="font-medium text-zinc-900">
+                              {item.aluno}
+                            </div>
+                            <div className="text-sm text-zinc-500">
+                              {item.email}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-zinc-700">
+                            {item.curso || 'Nao informado'}
+                          </td>
+                          <td className="px-6 py-4 text-zinc-700">
+                            {item.hora}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                              item.status.toLowerCase().includes('entrada')
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-amber-100 text-amber-700'
+                            }`}>
+                              {item.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-6 py-10 text-center text-zinc-500"
+                        >
+                          Nenhuma frequencia registrada hoje
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
 
             </div>

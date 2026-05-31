@@ -100,3 +100,63 @@ exports.buscarPorId = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.registrarFrequencia = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const agora = new Date();
+
+    const registro = {
+      data: agora.toLocaleDateString("pt-BR", {
+        timeZone: "America/Sao_Paulo"
+      }),
+      hora: agora.toLocaleTimeString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      status: status || "Saida"
+    };
+
+    const aluno = await Aluno.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: {
+          frequencia: {
+            $each: [registro],
+            $position: 0
+          }
+        }
+      },
+      { new: true }
+    );
+
+    if (!aluno) {
+      return res.status(404).json({
+        msg: "Aluno nao encontrado"
+      });
+    }
+
+    res.json(aluno);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+exports.deletar = async (req, res) => {
+  try {
+    const aluno = await Aluno.findByIdAndDelete(req.params.id);
+
+    if (!aluno) {
+      return res.status(404).json({
+        msg: "Aluno nao encontrado"
+      });
+    }
+
+    res.json({
+      msg: "Aluno deletado com sucesso"
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

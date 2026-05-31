@@ -5,13 +5,17 @@ const {
   cadastro,
   login,
   listar,
-  buscarPorId
+  buscarPorId,
+  registrarFrequencia,
+  deletar
 } = require("../controllers/alunoController");
 
 router.post("/cadastro", cadastro);
 router.post("/login", login);
 router.get("/listar", listar);
 router.get("/lista", listar);
+router.post("/:id/frequencia", registrarFrequencia);
+router.delete("/deletar/:id", deletar);
 router.get("/:id", buscarPorId);
 
 module.exports = router;

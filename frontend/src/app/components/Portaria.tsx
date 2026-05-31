@@ -165,12 +165,49 @@ export default function DashboardPorteiro() {
     navigate('/');
   }
 
-  function liberarAluno() {
+  async function liberarAluno() {
     if (!alunoSelecionado) return;
 
-    alert(
-      `Saida liberada para ${alunoSelecionado.nome}`
-    );
+    try {
+      const resposta = await fetch(
+        `${API}aluno/${alunoSelecionado._id}/frequencia`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            status: 'Saida'
+          })
+        }
+      );
+
+      const alunoAtualizado = await resposta.json();
+
+      if (!resposta.ok) {
+        alert(
+          alunoAtualizado.msg ||
+            'Erro ao registrar saida'
+        );
+        return;
+      }
+
+      setAlunos((lista) =>
+        lista.map((aluno) =>
+          aluno._id === alunoAtualizado._id
+            ? alunoAtualizado
+            : aluno
+        )
+      );
+
+      alert(
+        `Saida liberada para ${alunoSelecionado.nome}`
+      );
+    } catch (error) {
+      console.log(error);
+      alert('Erro ao conectar com servidor');
+      return;
+    }
 
     setAlunoSelecionado(null);
     localStorage.removeItem(
