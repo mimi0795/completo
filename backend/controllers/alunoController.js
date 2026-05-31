@@ -35,6 +35,24 @@ exports.cadastro = async (req, res) => {
 
     res.status(201).json(aluno);
   } catch (error) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern?.senha
+    ) {
+      return res.status(400).json({
+        msg: "Essa senha ja existe"
+      });
+    }
+
+    if (
+      error.code === 11000 &&
+      error.keyPattern?.email
+    ) {
+      return res.status(400).json({
+        msg: "Esse email ja existe"
+      });
+    }
+
     res.status(500).json(error);
   }
 };
